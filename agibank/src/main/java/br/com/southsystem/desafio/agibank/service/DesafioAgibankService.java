@@ -62,11 +62,7 @@ public class DesafioAgibankService implements IDesafioAgibankService {
 	@Override
 	public Void readDirectory() {
 		String inPath = System.getProperty("user.home") + dirIn;
-		//WatchService watchService = FileSystems.getDefault().newWatchService();
-		//Path pathInit = Paths.get(inPath);
-		//pathInit.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
-		//WatchKey key;
-    
+		
 		do  {
 		 
 		    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(inPath), new Filter<Path>() {
@@ -77,7 +73,7 @@ public class DesafioAgibankService implements IDesafioAgibankService {
 			})) { 
 			stream.forEach(path -> {
 						try {
-							List<String> lines= Files.readAllLines(path, Charset.defaultCharset());
+							List<String> lines= Files.readAllLines(path, Charset.forName("UTF-8"));
 							
 							Flux<String> stringFlux = Flux.just(lines).flatMap(Flux::fromIterable);
 							Mono<List<Vendedor>> vendedores = stringFlux.filter(a -> a.startsWith(codigoVendedor)).map(line -> line.split(firstSplitSeparator)).map(a2 ->
